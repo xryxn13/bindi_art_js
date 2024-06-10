@@ -1,5 +1,4 @@
-import streamlit as st
-from PIL import Image,ImageSequence
+from PIL import Image, ImageSequence
 import numpy as np
 import io
 
@@ -239,46 +238,3 @@ def convert_image_to_bytes(img):
     img_byte_arr = io.BytesIO()
     img.save(img_byte_arr, format='JPEG')
     return img_byte_arr.getvalue()
-
-def main():
-    colors = {"Black": "black", "Blue": "blue", "Green": "green",
-          "Pink": "pink", "Red": "red", "Orange": "orange"}
-    col1, col2 = st.columns(2)
-    with col1:
-        st.title("Bindi Art by CCL, IIT Gandhinagar")    
-    with col2:
-        st.image("logo.png", width=150)
-    # File uploader for selecting an image
-    uploaded_image = st.file_uploader("Choose an image:", type=["png", "jpg", "jpeg"])
-
-    # Slider for selecting matrix size
-    matrix_size = st.slider("Select matrix size:", min_value=1, max_value=70, value=60)
-    selected_color = st.selectbox("Choose a Color", list(colors.keys()))
-    color_hex = colors[selected_color]
-
-    if uploaded_image is not None:
-        # Process the image
-        source_image = Image.open(uploaded_image)
-        processed_image, counts = process_image(source_image, matrix_size,color_hex)
-        with open("outputGIF.gif", "rb") as f:
-            gif_bytes = f.read()
-        # Display the processed image
-        # col1, col2 = st.columns(2)
-        # with col1:
-        st.image(processed_image, caption="Processed Image", use_column_width=True)
-        st.download_button(label="Download Image", data=convert_image_to_bytes(processed_image), file_name="image1.jpg")
-
-        # Display the second image in the second column
-        # with col2:
-        st.image('outputGIF.gif',caption="Bindi Art GIF",use_column_width=True)
-        st.download_button(label="Download GIF", data=gif_bytes, file_name="image1.gif")
-
-        # Display counts
-        st.write("Number of Size 1's Bindis:", counts[0])
-        st.write("Number of Size 2's Bindis:", counts[1])
-        st.write("Number of Size 3's Bindis:", counts[2])
-        st.write("Number of Size 4's Bindis:", counts[3])
-        st.write("Number of Size 5's Bindis:", counts[4])
-
-if __name__ == "__main__":
-    main()
