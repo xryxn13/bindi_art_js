@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bindi Art by CCL, IIT Gandhinagar</title>
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <style>
+        #image-display {
+            width: 100%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bindi Art by CCL, IIT Gandhinagar</h1>
+    <img id="logo" src="logo.png" alt="Logo" width="150">
+    
+    <p>Select an image:</p>
+    <input type="file" id="image-upload" accept="image/*">
+    
+    <p>Select matrix size:</p>
+    <input type="range" id="matrix-size" min="1" max="70" value="60">
+    <span id="matrix-size-value">60</span>
+    
+    <p>Choose a Color:</p>
+    <select id="color-select">
+        <option value="Red">Red</option>
+        <option value="Black">Black</option>
+        <option value="Blue">Blue</option>
+        <option value="Green">Green</option>
+        <option value="Pink">Pink</option>
+        <option value="Orange">Orange</option>
+    </select>
+    
+    <button id="process-btn">Process Image</button>
+    
+    <h2>Processed Image</h2>
+    <img id="image-display" alt="Processed Image">
+    
+    <script type="text/python">
+        from pyscript import Element
+        from PIL import Image, ImageSequence
+        import numpy as np
+        import io
+
+        def process_image(source_image, matrix_size, selected_color):
+            # ... include your processing logic here ...
+            pass
+
+        def convert_image_to_bytes(img):
+            # Convert PIL image to bytes
+            img_byte_arr = io.BytesIO()
+            img.save(img_byte_arr, format='JPEG')
+            return img_byte_arr.getvalue()
+
+        def load_image(event):
+            file = event.target.files[0]
+            reader = window.FileReader.new()
+            reader.onload = lambda e: process_image_from_file(e.target.result)
+            reader.readAsDataURL(file)
+
+        def process_image_from_file(data_url):
+            image = Image.open(io.BytesIO(window.atob(data_url.split(",")[1]).encode("latin1")))
+            matrix_size = int(Element("matrix-size").element.value)
+            selected_color = Element("color-select").element.value
+
+            processed_image, counts = process_image(image, matrix_size, selected_color.lower())
+            processed_image.show()
+            Element("image-display").element.src = convert_image_to_bytes(processed_image).decode("latin1")
+
+        Element("image-upload").element.addEventListener("change", load_image)
+        Element("matrix-size").element.addEventListener("input", lambda e: Element("matrix-size-value").write(e.target.value))
+        Element("process-btn").element.addEventListener("click", process_image_from_file)
+    </script>
+</body>
+</html>
